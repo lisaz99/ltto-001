@@ -1,4 +1,5 @@
 
+
 drop table `lisa_forum_comments_with forumid_27mar15` ;
 
 drop table `lisa_forum_posts_with_forumid_27mar15`;
@@ -33,7 +34,7 @@ table `lisa_forum_posts_with_forumid_27mar15` AS
         
         
 alter table `lisa_forum_comments_with forumid_27mar15`
-add column `contribution_type` varchar(45) not null after `post_id`;
+add column `contribution_type` varchar(45) not null after `post_id_comments`;
 
 update `lisa_forum_comments_with forumid_27mar15`
 set contribution_type= 'comments';
