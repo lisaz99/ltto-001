@@ -1,0 +1,46 @@
+
+drop table `lisa_forum_comments_with forumid_27mar15` ;
+
+drop table `lisa_forum_posts_with_forumid_27mar15`;
+
+CREATE 
+   
+table `lisa_forum_comments_with forumid_27mar15` AS
+    SELECT 
+        `forum_threads`.`forum_id` AS `forum_id`,
+        `forum_comments`.`user_id` AS `user_id`,
+        `forum_comments`.`id` AS `comment_id`,
+        FROM_UNIXTIME(`forum_comments`.`post_time`) AS `comment_time`,
+        `forum_comments`.`post_id` AS `post_id`
+    FROM
+        (`forum_comments`
+        LEFT JOIN (`forum_forums_lisa_updated`
+        JOIN `forum_threads` ON ((`forum_forums_lisa_updated`.`forum_id` = `forum_threads`.`forum_id`))) ON ((`forum_threads`.`id` = `forum_comments`.`thread_id`)));
+        
+CREATE 
+    
+table `lisa_forum_posts_with_forumid_27mar15` AS
+    SELECT 
+        `forum_threads`.`forum_id` AS `forum_id`,
+        `forum_posts`.`user_id` AS `user_id`,
+        `forum_posts`.`id` AS `post_id`,
+        FROM_UNIXTIME(`forum_posts`.`post_time`) AS `FROM_UNIXTIME(forum_posts.post_time)`,
+        `forum_posts`.`thread_id` AS `thread_id`
+    FROM
+        (`forum_posts`
+        LEFT JOIN (`forum_forums_lisa_updated`
+        JOIN `forum_threads` ON ((`forum_forums_lisa_updated`.`forum_id` = `forum_threads`.`forum_id`))) ON ((`forum_threads`.`id` = `forum_posts`.`thread_id`)));
+        
+        
+alter table `lisa_forum_comments_with forumid_27mar15`
+add column `contribution_type` varchar(45) not null after `post_id`;
+
+update `lisa_forum_comments_with forumid_27mar15`
+set contribution_type= 'comments';
+
+alter table `lisa_forum_posts_with_forumid_27mar15`
+add column `contribution_type` varchar(45) not null after `thread_id`;
+
+update `lisa_forum_posts_with_forumid_27mar15`
+set contribution_type = 'posts';
+
