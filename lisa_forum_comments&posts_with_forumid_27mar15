@@ -1,3 +1,6 @@
+# create two tables 
+
+
 CREATE 
 
 table `lisa_forum_comments_with forumid_27mar15` AS
