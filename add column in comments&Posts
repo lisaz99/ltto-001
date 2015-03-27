@@ -1,4 +1,4 @@
-
+#delete the old table 
 drop table `lisa_forum_comments_with forumid_27mar15` ;
 
 drop table `lisa_forum_posts_with_forumid_27mar15`;
