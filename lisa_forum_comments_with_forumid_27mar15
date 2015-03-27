@@ -1,0 +1,13 @@
+CREATE 
+
+table `lisa_forum_comments_with forumid_27mar15` AS
+    SELECT 
+        `forum_threads`.`forum_id` AS `forum_id`,
+        `forum_comments`.`user_id` AS `user_id`,
+        `forum_comments`.`id` AS `comment_id`,
+        FROM_UNIXTIME(`forum_comments`.`post_time`) AS `comment_time`,
+        `forum_comments`.`post_id` AS `post_id`
+    FROM
+        (`forum_comments`
+        LEFT JOIN (`forum_forums`
+        JOIN `forum_threads` ON ((`forum_forums`.`id` = `forum_threads`.`forum_id`))) ON ((`forum_threads`.`id` = `forum_comments`.`thread_id`)))
