@@ -1,0 +1,101 @@
+
+
+drop table `lisa_forum_comments_with forumid_27mar15` ;
+
+drop table `lisa_forum_posts_with_forumid_27mar15`;
+
+drop table `lisa_froum_posts_with_user_attributes_27mar15`;
+
+drop table `lisa_forum_comments_with_user_attributes_27mar15`;
+
+
+CREATE 
+   
+temporary table  `lisa_forum_comments_with forumid_27mar15` AS
+    SELECT 
+        `forum_threads`.`forum_id` AS `forum_id_comments`,
+        `forum_comments`.`user_id` AS `user_id`,
+        `forum_comments`.`id` AS `comment_id`,
+        FROM_UNIXTIME(`forum_comments`.`post_time`) AS `comment_time`,
+        `forum_comments`.`post_id` AS `post_id_comments`
+    FROM
+        (`forum_comments`
+        LEFT JOIN (`forum_forums_lisa_updated`
+        JOIN `forum_threads` ON ((`forum_forums_lisa_updated`.`forum_id` = `forum_threads`.`forum_id`))) ON ((`forum_threads`.`id` = `forum_comments`.`thread_id`)));
+        
+CREATE 
+    
+temporary table `lisa_forum_posts_with_forumid_27mar15` AS
+    SELECT 
+        `forum_threads`.`forum_id` AS `forum_id_posts`,
+        `forum_posts`.`user_id` AS `user_id`,
+        `forum_posts`.`id` AS `post_id`,
+        FROM_UNIXTIME(`forum_posts`.`post_time`) AS `post_time`,
+        `forum_posts`.`thread_id` AS `thread_id`
+    FROM
+        (`forum_posts`
+        LEFT JOIN (`forum_forums_lisa_updated`
+        JOIN `forum_threads` ON ((`forum_forums_lisa_updated`.`forum_id` = `forum_threads`.`forum_id`))) ON ((`forum_threads`.`id` = `forum_posts`.`thread_id`)));
+        
+        
+alter table `lisa_forum_comments_with forumid_27mar15`
+add column `contribution_type` varchar(45) not null after `post_id_comments`;
+
+update `lisa_forum_comments_with forumid_27mar15`
+set contribution_type= 'comments';
+
+alter table `lisa_forum_posts_with_forumid_27mar15`
+add column `contribution_type` varchar(45) not null after `thread_id`;
+
+update `lisa_forum_posts_with_forumid_27mar15`
+set contribution_type = 'posts';
+
+CREATE 
+   
+table `lisa_froum_posts_with_user_attributes_27mar15` AS
+    SELECT 
+        `data_users_attributes`.`session_user_id` AS `session_user_id`,
+        `data_users_attributes`.`registration_time` AS `registration_time`,
+        `data_users_attributes`.`access_group_id` AS `access_group_id`,
+        `data_users_attributes`.`access_group_id_name` AS `access_group_id_name`,
+        `data_users_attributes`.`in_clickstream` AS `in_clickstream`,
+        `data_users_attributes`.`in_signature_track` AS `in_signature_track`,
+        `data_users_attributes`.`in_signature_track_financial_aid` AS `in_signature_track_financial_aid`,
+        `data_users_attributes`.`unenrolled` AS `unenrolled`,
+        `data_users_attributes`.`achievement_level` AS `achievement_level`,
+        `data_users_attributes`.`normal_grade` as `normal_grade`,
+        `lisa_forum_comments_with forumid_27mar15`.`forum_id_comments` AS `forum_id_comments`,
+        `lisa_forum_comments_with forumid_27mar15`.`user_id` AS `user_id`,
+        `lisa_forum_comments_with forumid_27mar15`.`comment_id` AS `comment_id`,
+        `lisa_forum_comments_with forumid_27mar15`.`comment_time` AS `comment_time`,
+        `lisa_forum_comments_with forumid_27mar15`.`post_id_comments` AS `post_id_comments`,
+        `lisa_forum_comments_with forumid_27mar15`.`contribution_type` AS `contribution_type`
+    FROM
+        (`lisa_forum_comments_with forumid_27mar15`
+        LEFT JOIN (`hash_mapping`
+        LEFT JOIN `data_users_attributes` ON ((`data_users_attributes`.`session_user_id` = CONVERT( `hash_mapping`.`session_user_id` USING UTF8)))) ON ((`hash_mapping`.`user_id` = `lisa_forum_comments_with forumid_27mar15`.`user_id`)));
+
+CREATE 
+
+table `lisa_forum_comments_with_user_attributes_27mar15` AS
+    SELECT 
+        `data_users_attributes`.`session_user_id` AS `session_user_id`,
+        `data_users_attributes`.`registration_time` AS `registration_time`,
+        `data_users_attributes`.`access_group_id` AS `access_group_id`,
+        `data_users_attributes`.`access_group_id_name` AS `access_group_id_name`,
+        `data_users_attributes`.`in_clickstream` AS `in_clickstream`,
+        `data_users_attributes`.`in_signature_track` AS `in_signature_track`,
+        `data_users_attributes`.`in_signature_track_financial_aid` AS `in_signature_track_financial_aid`,
+        `data_users_attributes`.`unenrolled` AS `unenrolled`,
+        `data_users_attributes`.`achievement_level` AS `achievement_level`,
+        `data_users_attributes`.`normal_grade` AS `normal_grade`,
+        `lisa_forum_comments_with forumid_27mar15`.`forum_id_comments` AS `forum_id_comments`,
+        `lisa_forum_comments_with forumid_27mar15`.`user_id` AS `user_id`,
+        `lisa_forum_comments_with forumid_27mar15`.`comment_id` AS `comment_id`,
+        `lisa_forum_comments_with forumid_27mar15`.`comment_time` AS `comment_time`,
+        `lisa_forum_comments_with forumid_27mar15`.`post_id_comments` AS `post_id_comments`,
+        `lisa_forum_comments_with forumid_27mar15`.`contribution_type` AS `contribution_type`
+    FROM
+        ((`lisa_forum_comments_with forumid_27mar15`
+        LEFT JOIN `hash_mapping` ON ((`lisa_forum_comments_with forumid_27mar15`.`user_id` = `hash_mapping`.`user_id`)))
+        JOIN `data_users_attributes` ON ((CONVERT( `hash_mapping`.`session_user_id` USING UTF8) = `data_users_attributes`.`session_user_id`)))
