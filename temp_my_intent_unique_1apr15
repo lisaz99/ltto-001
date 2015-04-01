@@ -1,7 +1,11 @@
+drop table `lisa_my_intent_unique_1Apr15`;
+
 create table `lisa_my_intent_unique_1Apr15` as
 
 SELECT 
 `ltto-001_2015-02-12`.`data_vector5_set_or_update_my_goal`.`session_user_id`,
+
+`ltto-001_2015-02-12`.`data_vector5_set_or_update_my_goal`.`access_group_id` as `access_group_id`,
 
 MAX(`ltto-001_2015-02-12`.`data_vector5_set_or_update_my_goal`.`SUG_Time`) as `last_update_time`,
 
