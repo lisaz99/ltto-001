@@ -26,11 +26,8 @@ add column `parent_id_updated`int(11) not null after `parent_id`;
 update `ltto-001_2015-02-12`.forum_forums_lisa_updated 
 set parent_id_updated = parent_id;
 
-
-update `ltto-001_2015-02-12`.forum_forums_lisa_updated
 # need to copy the parent_is then remname it
-
-
+update `ltto-001_2015-02-12`.forum_forums_lisa_updated
 set parent_id_updated = case
 
  when forum_id =2 then 2
