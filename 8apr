@@ -1,5 +1,6 @@
 
 
+
 drop table `forum_forums_lisa_updated`;
 drop table `lisa_forum_comments_with forumid_27mar15`;
 
@@ -193,7 +194,7 @@ table `lisa_forum_comments_with_user_attributes_27mar15` AS
         LEFT JOIN `hash_mapping` ON ((`lisa_forum_comments_with forumid_27mar15`.`user_id` = `hash_mapping`.`user_id`)))
         JOIN `data_users_attributes` ON ((CONVERT( `hash_mapping`.`session_user_id` USING UTF8) = `data_users_attributes`.`session_user_id`)));
         
-create
+create temporary
 table `lisa_my_intent_unique_8apr15` as
 
 SELECT 
@@ -210,7 +211,7 @@ group by `ltto-001_2015-02-12`.`data_vector5_set_or_update_my_goal`.`session_use
 
 
 
-create 
+create  temporary
 table `lisa_unique_forum_contribution_8apr15` as
 SELECT 
 distinct `Session User Id`,
@@ -219,10 +220,32 @@ count(count) as `total contribution`
  FROM `ltto-001_2015-02-12`.`lisa_posts & comments per user_8apr15`
  group by `Session User Id`;
  
- create 
+ create temporary
  table `lisa_unique_forum_contribution&intent_8apr15` as
  SELECT `lisa_my_intent_unique_8apr15`.`session_user_id`, 
 	`lisa_my_intent_unique_8apr15`.`last_updat_time`, 
 	`lisa_my_intent_unique_8apr15`.`SUG_MY_INTENT`, 
 	`lisa_unique_forum_contribution_8apr15`.`total contribution`
+FROM `lisa_unique_forum_contribution_8apr15` LEFT OUTER JOIN `lisa_my_intent_unique_8apr15` ON `lisa_unique_forum_contribution_8apr15`.`Session User Id` = `lisa_my_intent_unique_8apr15`.`session_user_id`;
+
+
+create 
+table `lisa_forum_contribution_intent_attribution_8apr15` as 
+SELECT `data_users_attributes`.`session_user_id`, 
+	`lisa_unique_forum_contribution_8apr15`.`Session User Id`, 
+	`lisa_my_intent_unique_8apr15`.`last_updat_time`, 
+	`lisa_my_intent_unique_8apr15`.`SUG_MY_INTENT`, 
+	`lisa_unique_forum_contribution_8apr15`.`total contribution`, 
+	`data_users_attributes`.`access_group_id`, 
+	`data_users_attributes`.`access_group_id_name`, 
+	`data_users_attributes`.`in_clickstream`, 
+	`data_users_attributes`.`in_signature_track`, 
+	`data_users_attributes`.`unenrolled`, 
+	`data_users_attributes`.`achievement_level`, 
+	`data_users_attributes`.`normal_grade`
 FROM `lisa_unique_forum_contribution_8apr15` LEFT OUTER JOIN `lisa_my_intent_unique_8apr15` ON `lisa_unique_forum_contribution_8apr15`.`Session User Id` = `lisa_my_intent_unique_8apr15`.`session_user_id`
+	 LEFT OUTER JOIN `data_users_attributes` ON `lisa_my_intent_unique_8apr15`.`session_user_id` = `data_users_attributes`.`session_user_id`
+
+
+
+
