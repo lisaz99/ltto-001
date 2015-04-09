@@ -1,0 +1,62 @@
+
+
+CREATE 
+   
+table `lisa_froum_posts_with_user_attributes_9apr15` AS
+ 
+       SELECT
+	`lisa_forum_posts_with_forumid_27mar15`.`forum_id_posts` as`forum_id`, 
+    `lisa_forum_posts_with_forumid_27mar15`.`parent_id_updated`,
+    `lisa_forum_posts_with_forumid_27mar15`.`parent_name`,
+	`lisa_forum_posts_with_forumid_27mar15`.`user_id`, 
+	`hash_mapping`.`session_user_id`, 
+    `data_users_attributes`.`registration_time`,
+	`lisa_forum_posts_with_forumid_27mar15`.`post_id` as `id`, 
+	`lisa_forum_posts_with_forumid_27mar15`.`post_time` as `time`, 
+	`lisa_forum_posts_with_forumid_27mar15`.`thread_id` as `thread/post_id`, 
+	`lisa_forum_posts_with_forumid_27mar15`.`contribution_type`, 
+	`data_users_attributes`.`access_group_id`, 
+	`data_users_attributes`.`access_group_id_name`, 
+	`data_users_attributes`.`in_clickstream`, 
+	`data_users_attributes`.`in_signature_track`, 
+	`data_users_attributes`.`in_signature_track_financial_aid`, 
+	`data_users_attributes`.`unenrolled`, 
+	`data_users_attributes`.`achievement_level`, 
+	`data_users_attributes`.`normal_grade`
+	
+FROM `hash_mapping` RIGHT OUTER JOIN `lisa_forum_posts_with_forumid_27mar15` ON `hash_mapping`.`user_id` = `lisa_forum_posts_with_forumid_27mar15`.`user_id`
+	 LEFT OUTER JOIN `data_users_attributes` ON `hash_mapping`.`session_user_id` = `data_users_attributes`.`session_user_id`;
+     
+CREATE 
+
+table `lisa_forum_comments_with_user_attributes_9apr15`  AS
+    SELECT 
+    
+	`lisa_forum_comments_with forumid_27mar15`.`forum_id_comments` AS `forum_id`, 
+	`lisa_forum_comments_with forumid_27mar15`.`parent_id_updated`,
+    `lisa_forum_comments_with forumid_27mar15`.`parent_name`,
+	`lisa_forum_comments_with forumid_27mar15`.`user_id`,
+	`data_users_attributes`.`session_user_id` AS `session_user_id`,
+	`data_users_attributes`.`registration_time` AS `registration_time`,  
+       
+          `lisa_forum_comments_with forumid_27mar15`.`comment_id` AS `id`,
+        `lisa_forum_comments_with forumid_27mar15`.`comment_time` AS `time`,
+        `lisa_forum_comments_with forumid_27mar15`.`post_id_comments` AS `thread/post_id`,
+        `lisa_forum_comments_with forumid_27mar15`.`contribution_type` AS `contribution_type`,
+       
+
+        `data_users_attributes`.`access_group_id` AS `access_group_id`,
+        `data_users_attributes`.`access_group_id_name` AS `access_group_id_name`,
+        `data_users_attributes`.`in_clickstream` AS `in_clickstream`,
+        `data_users_attributes`.`in_signature_track` AS `in_signature_track`,
+        `data_users_attributes`.`in_signature_track_financial_aid` AS `in_signature_track_financial_aid`,
+        `data_users_attributes`.`unenrolled` AS `unenrolled`,
+        `data_users_attributes`.`achievement_level` AS `achievement_level`,
+        `data_users_attributes`.`normal_grade` AS `normal_grade`
+        
+        
+        
+    FROM
+        ((`lisa_forum_comments_with forumid_27mar15`
+        LEFT JOIN `hash_mapping` ON ((`lisa_forum_comments_with forumid_27mar15`.`user_id` = `hash_mapping`.`user_id`)))
+        JOIN `data_users_attributes` ON ((CONVERT( `hash_mapping`.`session_user_id` USING UTF8) = `data_users_attributes`.`session_user_id`)));
